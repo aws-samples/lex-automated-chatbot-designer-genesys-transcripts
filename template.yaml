@@ -1,0 +1,84 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  eventbridge-transcribe-poc
+
+  Sample SAM Template for eventbridge-transcribe-poc
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 300
+    MemorySize: 128
+
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+Parameters:
+  GenesysBusname: 
+    Type: String
+    Default: aws.partner/genesys.com/cloud/8ead2353-ac3c-4117-b376-cf895a43d053/gensys-eb-poc-demo
+  ClientId:
+    Type: String
+    Default: none
+  ClientSecret:
+    Type: String
+    Default: none
+  Bucketname:
+    Type: String
+    Default: anbose-test-learning
+  FileNamePrefix:
+    Type: String
+    Default: event-bridge/transcript/conversation-
+  GenCloudEnv: 
+    Type: String
+    Default: usw2.pure.cloud
+Resources:
+  ReadFromEBFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: ReadFromEBandWritetoS3/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          clientid: !Ref ClientId
+          clientsecret: !Ref ClientSecret
+          bucketname: !Ref Bucketname
+          fileprefix: !Ref FileNamePrefix        
+          genesysenv: !Ref GenCloudEnv
+      Policies:
+        - S3WritePolicy:
+            BucketName: !Ref Bucketname
+
+  GenesysEventRule:
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: "EventRule"
+      EventBusName: !Ref GenesysBusname
+      EventPattern: 
+        source: 
+          - prefix: 
+              aws.partner/genesys.com
+
+      State: "ENABLED"
+      Targets:
+      -
+        Arn:
+          Fn::GetAtt:
+            - "ReadFromEBFunction"
+            - "Arn"
+        Id: genesysEbEventRule
+  PermissionForEventsToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: 
+        Ref: ReadFromEBFunction
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: 
+        Fn::GetAtt: 
+          - "GenesysEventRule"
+          - "Arn"  
+
+
