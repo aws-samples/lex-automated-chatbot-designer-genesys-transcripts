@@ -4,7 +4,7 @@ version = 0.1
 
 [default]
 [default.global.parameters]
-stack_name = "eventbridge-transcribe-poc"
+stack_name = "eventbridge-transcribe-AmazonLexBot-poc"
 
 [default.build.parameters]
 cached = true
@@ -17,9 +17,9 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
-s3_prefix = "eventbridge-transcribe-poc"
+s3_prefix = "eventbridge-transcribe-AmazonLexBot-poc"
 region = "us-east-1"
-parameter_overrides = "GenesysBusname=\"aws.partner/genesys.com/cloud/8ead2353-ac3c-4117-b376-cf895a43d053/gensys-eb-poc-demo\" ClientId=\"cfb8891e-0838-41ef-8041-0aa91939edb7\" ClientSecret=\"UZvAs3YynbTFv2QNR-MAUtFdBVeq4qUWC_vt88AnT10\" Bucketname=\"anbose-test-learning\" FileNamePrefix=\"event-bridge/transcript/conversation-\" GenCloudEnv=\"usw2.pure.cloud\""
+parameter_overrides = "GenesysBusname=\"aws.partner/genesys.com/cloud/8ead2353-ac3c-4117-b376-cf895a43d053/gensys-eb-poc-demo\" ClientId=\"cfb8891e-0838-41ef-8041-0aa91939edb7\" ClientSecret=\"UZvAs3YynbTFv2QNR-MAUtFdBVeq4qUWC_vt88AnT10\" FileNamePrefix=\"event-bridge/transcript/conversation-\" GenCloudEnv=\"usw2.pure.cloud\""
 image_repositories = []
 
 [default.package.parameters]

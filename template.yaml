@@ -50,7 +50,7 @@ Resources:
   ReadFromEBFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ReadFromEBFunction
+      CodeUri: ReadFromEBandWritetoS3/
       Handler: app.lambda_handler
       Runtime: python3.9
       Environment:
@@ -74,9 +74,9 @@ Resources:
   ConvertToLexFormat:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ConverToLexFormat
+      CodeUri: ConvertToLexFormat/
       Handler: app.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.9
       Environment:
         Variables:
           targetbucketname:
@@ -85,6 +85,13 @@ Resources:
       - S3WritePolicy:
           BucketName:
             Ref: TransformedTranscriptBucket
+      - Version: '2012-10-17' 
+        Statement:
+            - Effect: Allow
+              Action:
+               - s3:GetObject
+               - s3:GetObjectACL
+              Resource: 'arn:aws:s3:::*'
       Events:
         FileUpload:
           Type: S3
