@@ -15,7 +15,7 @@ Globals:
 Parameters:
   GenesysBusname:
     Type: String
-    Default: aws.partner/genesys.com/cloud/8ead2353-ac3c-4117-b376-cf895a43d053/gensys-eb-poc-demo
+    Default: none
   ClientId:
     Type: String
     Default: none
