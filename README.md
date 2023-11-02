@@ -1,7 +1,10 @@
 
 # genesys-lex-automated-chatbot-designer
 
-  
+
+![Architecture Diagram](/Genesys-EventBridge-Lexdesigner.jpg)
+
+
 ## About the project
 
 This project contains source code and supporting files for a serverless application that you can deploy with AWS SAM CLI. It includes the following files and folders.
@@ -19,7 +22,7 @@ This project contains source code and supporting files for a serverless applicat
 
   
 
-The application uses several AWS resources, including Lambda functions , Event Bridge , Event Bridge rules and s3 buckets. These resources are defined in the `template.yaml` file in this project.
+The application uses several AWS resources, including AWS Lambda functions , Amazon Event Bridge , Amazon Event Bridge rules and Amazon S3 buckets. These resources are defined in the `template.yaml` file in this project.
  
 ## Prerequisites
 
@@ -63,7 +66,7 @@ The first command will build the source of your application. The second command 
  * **Parameter GenesysBusname**: This is the bus name created when Genesys integratoin is configured.  As mentioned in the prerequisites section enter the name of the bus here. The pattern of the bus name should look like `aws.partner/genesys.com/*`
  * **Parameter ClientId**: This is mentioned in the prerequisite section , copy the parameter  value from Genesys Cloud CX.
  * **Parameter ClientSecret**: This is mentioned in the prerequisite section , copy the parameter  value from Genesys Cloud CX.
- * **Parameter FileNamePrefix**: This is the file name prefix for the target transcript file in the raw bucket. There is a ddefault value associated with it, but can be changed.
+ * **Parameter FileNamePrefix**: This is the file name prefix for the target transcript file in the raw bucket. There is a default value associated with it, but can be changed.
 
  * **Parameter GenCloudEnv**: This is the cloud environment for the specific Genesys organization. Genesys is available in more than 15 regions world wide today, so this value is mandatory and should point to the environment where your organizatoin is created in Genesys eg: usw2.pure.cloud
  * 
@@ -79,7 +82,7 @@ The first command will build the source of your application. The second command 
 
  * Make a call to Genesys to create a transcript
  * Wait for a couple of minutes and check the TransformedTranscript bucket for the output
- * Take the output json and feed into lex designer to create the intents
+ * Once you have sufficient amount of transcripts, utilize Amazon Lex Automated Chatbot Designer to build your first bot. For the required number of transcripts, please refer to the Amazon Lex documentation [here](https://docs.aws.amazon.com/lexv2/latest/dg/designing-import.html). 
  
 
   
