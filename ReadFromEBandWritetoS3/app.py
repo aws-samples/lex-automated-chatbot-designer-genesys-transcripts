@@ -6,7 +6,7 @@ import os
 import base64, requests, sys
 #import PureCloudPlatformClientV2
 # import requests
-def genToken(clientid, clientsecret,genesysenv):
+def genToken(clientid, clientsecret,genesysenv,httptimeout):
        # Base64 encode the client ID and client secret
     
 
@@ -23,7 +23,7 @@ def genToken(clientid, clientsecret,genesysenv):
     
 
     # Get token
-    response = requests.post(f"https://login.{genesysenv}/oauth/token", data=request_body, headers=request_headers)
+    response = requests.post(f"https://login.{genesysenv}/oauth/token", data=request_body, headers=request_headers,timeout=httptimeout)
 
     # Check response
     if response.status_code == 200:
@@ -61,10 +61,11 @@ def filterEvents(event) :
         }
         return response
 
-def getJsonPayload(conversationdetails,requestheaders,genesysenv):
+def getJsonPayload(conversationdetails,requestheaders,genesysenv,httptimeout):
 
         response = requests.get(f"https://api.{genesysenv}/api/v2/speechandtextanalytics/conversations/{conversationdetails['conversationId']}/communications/{conversationdetails['communicationId']}/transcripturl", 
-                              headers=requestheaders)
+                              headers=requestheaders,
+                              timeout=httptimeout)
            # Check response
         if response.status_code == 200:
             print("Got response")
@@ -73,7 +74,7 @@ def getJsonPayload(conversationdetails,requestheaders,genesysenv):
             sys.exit(response.status_code)
 
         jsonpayLoad = response.json()
-        actualpayload=requests.get(jsonpayLoad['url'])
+        actualpayload=requests.get(jsonpayLoad['url'],timeout=httptimeout)
 
         return actualpayload.json()
 
@@ -109,6 +110,7 @@ def lambda_handler(event, context):
     bucketname = os.environ['bucketname']
     fileprefix = os.environ['fileprefix']
     genesysenv = os.environ['genesysenv'] # eg. mypurecloud.com
+    httptimeout = os.environ['httptimeout'] # This was added because of the warnings
     
     # Fliter out events
     resp=filterEvents(event)
@@ -119,9 +121,9 @@ def lambda_handler(event, context):
     print ("The Event is not filtered and it is::",json.dumps(resp))
 
     # Now generate the token
-    reqHeader = genToken(clientid, clientsecret,genesysenv)
+    reqHeader = genToken(clientid, clientsecret,genesysenv,httptimeout)
     # Now invoke the function to get the transcript
-    payload = getJsonPayload(resp,reqHeader,genesysenv)
+    payload = getJsonPayload(resp,reqHeader,genesysenv,httptimeout)
 
     print ("The Json Conversation payload  is::",json.dumps(payload))
     # Now write to S3
